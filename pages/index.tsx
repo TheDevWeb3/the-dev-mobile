@@ -1,51 +1,67 @@
-import {
-  ConnectWallet,
-  MediaRenderer,
-  Web3Button,
-  useAddress,
-  useContract,
-  useContractMetadata,
-} from "@thirdweb-dev/react";
-import { NFT_CONTRACT_ADDRESS } from "../consts/addresses";
+import { ConnectEmbed, ConnectWallet, darkTheme, useShowConnectEmbed } from "@thirdweb-dev/react";
 import styles from "../styles/Home.module.css";
 import { NextPage } from "next";
+import ConnectedPage from "../components/connected";
+
+const customTheme = darkTheme({
+  
+    colors: { accentButtonBg: "#642598" },
+  
+  
+})
 
 const Home: NextPage = () => {
-  const address = useAddress();
+  const showConnectEmbed = useShowConnectEmbed();
 
-  const { contract } = useContract(NFT_CONTRACT_ADDRESS);
-
-  const { data: contractMetadata } = useContractMetadata(contract);
+  const openNewWindow = () => {
+    window.open("https://www.sycoticsociety.com", "_blank", "noopener noreferrer");
+  };
 
   return (
-    <div className={styles.container}>
-      {address ? (
-        <div className={styles.nftClaim}>
-          <MediaRenderer
-            src={contractMetadata?.image}
-            width="auto"
-            height="60%"
+    <div>
+      {showConnectEmbed ? (
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <div
             style={{
-              borderRadius: "20px",
-              maxWidth: "500px",
+              width: '50%',
+              height: '100vh',
+              background: `url('/images/template-preview.png')`,
+              backgroundColor: 'black',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              cursor: 'pointer', // Add cursor pointer
             }}
-          />
-          <h1>{contractMetadata?.name}</h1>
-          <Web3Button
-            contractAddress={NFT_CONTRACT_ADDRESS}
-            action={(contract) => contract.erc1155.claim(0, 1)}
-            onSuccess={() => alert("NFT Claimed!")}
-          >
-            Claim NFT
-          </Web3Button>
-        </div>
-      ) : (
-        <div className={styles.loginContainer}>
-          <ConnectWallet btnTitle="Login" />
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default Home;
+           
+            onClick={openNewWindow} // Attach onClick event
+            ></div>
+            <div
+              style={{
+                width: '50%',
+                height: '100vh',
+                backgroundColor: 'black',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '-25px', // Raise the container by 40px
+              }}
+            >
+             <h2 style={{ marginBottom: '28px', display: 'flex' }}></h2>
+              <ConnectEmbed 
+                theme={darkTheme({
+                  colors: { accentButtonBg: "#642598" },
+                })}
+              
+              />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <ConnectedPage />
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  export default Home;
